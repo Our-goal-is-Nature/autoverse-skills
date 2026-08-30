@@ -10,7 +10,7 @@ Agent 使用 `--domain computer_science`。
 autoverse --json --quiet search "<research question>" --domain computer_science
 autoverse --json --quiet search "<research question>" --domain computer_science --type review
 autoverse --json --quiet resolve doi:<doi>
-autoverse --json --quiet resolve arxiv:<xxxxxxxx>
+autoverse --json --quiet resolve arxiv:<arxiv-id>
 ```
 
 Agent 将总问题拆为互补的检索角度，例如任务、方法、基准方法、数据集、评价指标、争议与近年进展。方法、模型、数据集的别名均须纳入检索式。

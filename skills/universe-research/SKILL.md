@@ -19,7 +19,7 @@ metadata:
 - 默认如下。Agent 以近五年文献为主，题目的奠基研究仍纳入。Agent 约纳入 25–40 篇，分若干检索式完成。Agent 只依据摘要作判断。Agent 交综述（`.md`）与证据表（`.csv`），不交 PDF。
 - Agent 按该学科 reference 中的检索角度拆开总问题。各角度分别检索。Agent 先按 DOI、再按题名去重。该学科 reference 列出的别名均须纳入检索式。同一工作的预印本与正式发表文本并列时，Agent 只保留正式发表。
 - Agent 用 Autoverse 多次检索并核验篇目。Agent 依结果修改检索式。Agent 不得以调用次数或检索排序代替对文献的判断。
-- 除本文件与对应 reference 已列出的参数外，或命令不能执行时，Agent 再读取 `autoverse-cli` 或命令说明。Agent 不膮测选项名称。
+- 除本文件与对应 reference 已列出的参数外，或命令不能执行时，Agent 再读取 `autoverse-cli` 或命令说明。Agent 不臆测选项名称。
 - Agent 发现文献与核验题录只走本文件与对应 reference 列出的 Autoverse 命令。Agent 不得把网页检索、会议主页或其他站点当作发现文献的入口。Agent 不得打开出版页补题录。
 - Agent 纳入两篇及以上时，把标识写入 `ids.txt`，用 `batch` 一次核验题录。Agent 不要对每篇单独 `resolve`。
 
