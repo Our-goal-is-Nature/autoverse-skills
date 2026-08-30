@@ -1,0 +1,26 @@
+# 计算机科学
+
+Agent 判定本题为计算机科学后阅读本文件。Agent 不得把本文件的检索角度用于医学或工科。
+
+## 检索
+
+Agent 使用 `--domain computer_science`。
+
+```text
+autoverse --json --quiet search "<research question>" --domain computer_science
+autoverse --json --quiet search "<research question>" --domain computer_science --type review
+autoverse --json --quiet resolve doi:<doi>
+autoverse --json --quiet resolve arxiv:<arxiv-id>
+```
+
+Agent 将总问题拆为互补的检索角度，例如任务、方法、基准方法、数据集、评价指标、争议与近年进展。方法、模型、数据集的别名均须纳入检索式。
+
+文献来源中写「Autoverse 计算机文献检索，含预印本」。
+
+## 主题各节
+
+Agent 按方法族、任务或评测对象组织主题各节。读后文所需的问题表述与符号，并入引言或本节开头。Agent 不单列 Background。
+
+## 用词
+
+当前最优结果，不用「最先进」。基准方法，不用「基线」。消融实验，不用「烧蚀」。预印本，不用「预打印」。
