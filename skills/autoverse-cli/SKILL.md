@@ -2,7 +2,7 @@
 name: autoverse-cli
 description: 仅在用户要安装、配置、调用或排障 Autoverse CLI 本身时使用，处理登录、凭证 profile、账户与点数、命令语法、JSON/退出码和原子命令合同。不要因普通“找论文、做开题、沿种子扩展”请求单独触发。
 metadata:
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # Autoverse CLI
@@ -111,6 +111,7 @@ autoverse --json --quiet batch -f ids.txt
 - `REQUEST_OUTCOME_UNKNOWN`：先查 usage，不重复发送。
 - `retryable=true`：同一逻辑调用最多再尝试一次。
 - `retryable=false`：停止，不猜路径、不换来源。
+- `ALL_SOURCES_UNAVAILABLE`：没有任何可用论文结果；按 `retryable` 最多重试一次，仍失败就停止。不要把它报告成“检索到 0 篇”。
 - `CURSOR_OPTION_CONFLICT`：cursor 页只带 cursor 和可选 limit。
 - `INPUT_FILE_*`：修正文件后再调用 batch。
 - `RELATED_ID_*`：不要把 DOI、裸数字或含斜杠 ID 塞入 related 路径。
@@ -128,7 +129,7 @@ autoverse topup
 
 ## 能力边界
 
-- 精选动词输出稳定最小 DTO，不透出完整 OpenAPI 对象。
+- 精选文献动词输出稳定的公开科研字段：完整作者、文献类型、公开标识符、分来源被引、OA、主题、日期与 venue 信息；不透出内部路由、计费、来源状态、provenance、conflicts 或完整 OpenAPI 对象。
 - `api` 只用于用户明确要求的高级原始 API 调试；普通调用优先精选动词。
 - CLI 不创建或管理 run、keep、工作区、`notes/` 或 `kept.md`。
 - CLI 不写综述正文、不声称全文、不提供期刊分区。

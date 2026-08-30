@@ -28,8 +28,8 @@ autoverse [--json] [--quiet] [--api-base URL] [--api-key KEY] [--profile NAME] <
 |---|---:|---|---|
 | `search` | 1；expanded 2；cursor 0 | query、domain、mode、year、type、limit、cursor | PaperCard 列表、next_cursor |
 | `resolve` | 1 | prefixed identifier | PaperDetail |
-| `batch` | 1/调用 | `-f/--file`，1–50 ID | identifier + PaperCard/error |
-| `authors` | 1 | name | AuthorCard 列表 |
+| `batch` | 1/调用 | `-f/--file`，1–50 ID | identifier + PaperDetail/error |
+| `authors` | 1 | name | 完整 AuthorCard 列表 |
 | `related` | 1/via/page；DOI 内嵌 resolve 另 1 | identifier、via、limit、offset | PaperCard 列表、via、seed、next_offset |
 
 ## Search
@@ -76,24 +76,35 @@ autoverse --json --quiet related <prefixed-id> --via references|cited-by|similar
 - 结果剥除 contexts/intents/is_influential；
 - 503 不降级 search。
 
-## PaperCard
+## PaperCard / PaperDetail
 
 ```json
 {
   "id": "doi:10.x/y",
   "title": "Paper title",
   "year": 2025,
+  "publication_date": "2025-06-30",
   "venue": "Journal",
+  "venue_type": "journal",
+  "venue_issn": "1234-5678",
   "first_author": "A. Smith",
   "author_count": 4,
+  "authors": ["A. Smith", "B. Jones"],
+  "author_details": [{"name":"A. Smith","sequence":1,"author_id":"a1","orcid":null,"affiliations":[]}],
+  "publication_types": ["review"],
   "identifiers": {"doi": "10.x/y", "pmid": "123"},
-  "abstract": "..."
+  "abstract": "...",
+  "citation_counts": [{"provider":"openalex","value":42}],
+  "open_access": {"is_oa":true,"status":"gold","url":"https://...","license":"cc-by","provider":"openalex"},
+  "subjects": ["oncology"]
 }
 ```
 
-`PaperDetail` 只额外增加 `authors:string[]` 与 `publication_types:string[]`。
+`search`、`resolve`、`batch` 和 `related` 使用同一公开科研字段集合。`batch.items[].paper` 与 `resolve.data` 保持一致。被引按来源分别返回，不合成单一数字。
 
-默认不返回 route、source_status、usage、sources、provenance、conflicts、citation_counts、subjects、OA 细节或 Provider 原始对象。
+`authors` 额外返回 aliases、paper_count、citation_counts、h_index 与 external_ids。`related` 的引用边可带 `relation.contexts/intents/is_influential`。
+
+默认不返回 route、source_status、usage、sources、provenance、conflicts 或 Provider 原始对象。高级原始调试才使用 `api`。
 
 ## Error Codes
 

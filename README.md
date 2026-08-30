@@ -47,8 +47,8 @@ There is no MCP product path. Agents use the CLI's `--json --quiet` contract.
 
 The current Skill Pack version and supported CLI range are in [`manifest.json`](./manifest.json). Each `SKILL.md` also carries its own `metadata.version`.
 
-- Skill Pack: `0.1.0`
-- Compatible CLI: `>=0.2.0,<0.3.0`
+- Skill Pack: `0.2.0`
+- Compatible CLI: `>=0.3.0,<0.4.0`
 
 CLI and Skills are versioned independently. Upgrade them with `pipx upgrade autoverse` and `npx skills update ...` respectively.
 
@@ -65,4 +65,3 @@ Review Skills before using them; installed Skills run with the permissions of th
 ## License
 
 Apache License 2.0. See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
-
