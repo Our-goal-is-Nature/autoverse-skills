@@ -71,9 +71,10 @@ autoverse --json --quiet related <prefixed-id> --via references|cited-by|similar
 - pmid 直接变成 `PMID:<digits>`；
 - semantic_scholar 使用 paperId；
 - `s2:<digits>` 变成 `CorpusId:<digits>`；
+- `pmcid:PMC10328000` 与 `pmcid:10328000` 都变成 `PMCID:10328000`；
 - DOI 或含斜杠 ID 先 resolve，再选 path-safe ID；
 - 裸数字拒绝；
-- 结果剥除 contexts/intents/is_influential；
+- `references` / `cited-by` 在上游提供引用边信息时保留 `relation.contexts/intents/is_influential`；`similar` 不产生 `relation`；
 - 503 不降级 search。
 
 ## PaperCard / PaperDetail
@@ -100,9 +101,9 @@ autoverse --json --quiet related <prefixed-id> --via references|cited-by|similar
 }
 ```
 
-`search`、`resolve`、`batch` 和 `related` 使用同一公开科研字段集合。`batch.items[].paper` 与 `resolve.data` 保持一致。被引按来源分别返回，不合成单一数字。
+`search`、`resolve`、`batch` 和 `related` 使用同一公开科研字段集合（上表全部字段）。`batch.items[].paper` 与 `resolve.data` 保持一致；`search.data.items[]` 与 `related.data.items[]` 也使用同一形状。被引按来源分别返回，不合成单一数字。
 
-`authors` 额外返回 aliases、paper_count、citation_counts、h_index 与 external_ids。`related` 的引用边可带 `relation.contexts/intents/is_influential`。
+`authors` 额外返回 aliases、paper_count、citation_counts、h_index 与 external_ids。`related` 的 `references` / `cited-by` 条目在上游提供引用边字段时附加 `relation`（包含 `contexts`、`intents`、`is_influential`）；`similar` 不附加 `relation`。没有引用边信息时省略该键，不返回空的伪关系。
 
 默认不返回 route、source_status、usage、sources、provenance、conflicts 或 Provider 原始对象。高级原始调试才使用 `api`。
 
@@ -130,3 +131,4 @@ autoverse --json --quiet api -X GET /v1/...
 ```
 
 只在用户明确要求高级原始 API 调试时使用；普通调用优先精选动词。
+原始成功响应可以是 JSON 对象或数组；CLI 会保持对象，并把顶层数组放入 `data`。
