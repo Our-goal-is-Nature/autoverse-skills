@@ -6,17 +6,11 @@ Agent 判定本题为医学后阅读本文件。Agent 不得把本文件的检�
 
 Agent 使用 `--domain medicine`。
 
-```text
-autoverse --json --quiet search "<clinical question>" --domain medicine
-autoverse --json --quiet search "<clinical question>" --domain medicine --type review
-autoverse --json --quiet resolve <prefixed-id>
-```
-
 Agent 将总问题拆为互补的检索角度，例如机制、疗效、方法、结局、争议与近年进展。基因、药物、疾病的别名均须纳入检索式。
 
 文献来源中写「Autoverse 医学文献检索」。
 
-精选命令未返回被引次数或医学题录时，Agent 在共用路径之外只可再调用下列路径。
+精选命令未返回被引次数或医学题录时，Agent 可再调用下列路径。Agent 调用前须查阅官方 API。
 
 ```text
 autoverse --json --quiet api -X GET /v1/pubmed/articles/summary
@@ -25,7 +19,7 @@ autoverse --json --quiet api -X GET /v1/pubmed/articles/detail
 
 ## 主题各节
 
-Agent 按机制、通路、亚型或争议组织主题各节。
+Agent 按机制、通路、亚型或争议组织主题各节。引言只写用户题目中的对象与比较范围，不写入学科总述。近五年、奠基、完整题名检索不加年份窗，以主技能为准。
 
 ## 著录
 
