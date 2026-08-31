@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "name": "autoverse-skills",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "requires_cli": ">=0.3.0,<0.4.0",
   "skills": {
     "autoverse-cli": "0.2.1",
