@@ -74,7 +74,7 @@ autoverse --json --quiet related <prefixed-id> --via references|cited-by|similar
 - `pmcid:PMC10328000` 与 `pmcid:10328000` 都变成 `PMCID:10328000`；
 - DOI 或含斜杠 ID 先 resolve，再选 path-safe ID；
 - 裸数字拒绝；
-- `references` / `cited-by` 在上游提供引用边信息时保留 `relation.contexts/intents/is_influential`；`similar` 不产生 `relation`；
+- `references` / `cited-by` 在上游提供引用边信息时保留 `relation.contexts/intents/is_influential`；没有边信息时省略 `relation`；`similar` 不产生 `relation`；
 - 503 不降级 search。
 
 ## PaperCard / PaperDetail
