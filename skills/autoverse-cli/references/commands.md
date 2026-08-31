@@ -19,6 +19,7 @@ autoverse [--json] [--quiet] [--api-base URL] [--api-key KEY] [--profile NAME] <
 | `whoami` | 0 | `{identity,email,balance}` |
 | `usage` | 0 | `{balance,prices}` |
 | `topup` | 0 | `{account_email,packs}` |
+| `update` | 0 | 查询 PyPI；不改本机安装 |
 
 `login --no-browser` 会在等待回调时向终端展示授权 URL，只用于人读模式；不得与 `--json` 组合。
 
@@ -26,7 +27,7 @@ autoverse [--json] [--quiet] [--api-base URL] [--api-key KEY] [--profile NAME] <
 
 | 命令 | 点数 | 主要参数 | 机器 data |
 |---|---:|---|---|
-| `search` | 1；expanded 2；cursor 0 | query、domain、mode、year、type、limit、cursor | PaperCard 列表、next_cursor |
+| `search` | 1；expanded 2；cursor 0 | query、domain、mode、year-from、year-to、type、limit、cursor | PaperCard 列表、next_cursor |
 | `resolve` | 1 | prefixed identifier | PaperDetail |
 | `batch` | 1/调用 | `-f/--file`，1–50 ID | identifier + PaperDetail/error |
 | `authors` | 1 | name | 完整 AuthorCard 列表 |
@@ -44,6 +45,8 @@ autoverse --json --quiet search "<query>" --limit 20
 
 `--mode`：`auto|relevance|systematic|expanded`
 
+`--year-from`、`--year-to`：闭区间年份。不要使用已移除的 `--year`。
+
 `--type`：`journal_article|review|meta_analysis|clinical_trial|case_report`，可重复。
 
 翻页：
@@ -52,7 +55,7 @@ autoverse --json --quiet search "<query>" --limit 20
 autoverse --json --quiet search --cursor <token> --limit 20
 ```
 
-cursor 模式禁止 query、domain、mode、year 和 type。token 不透明。
+cursor 模式禁止 query、domain、mode、year-from、year-to 和 type。token 不透明。
 
 ## Resolve and Batch
 

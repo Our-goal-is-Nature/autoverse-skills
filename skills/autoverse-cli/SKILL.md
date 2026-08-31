@@ -2,7 +2,7 @@
 name: autoverse-cli
 description: 仅在用户要安装、配置、调用或排障 Autoverse CLI 本身时使用，处理登录、凭证 profile、账户与点数、命令语法、JSON/退出码和原子命令合同。不要因普通“找论文、做开题、沿种子扩展”请求单独触发。
 metadata:
-  version: 0.2.1
+  version: 0.3.2
 ---
 
 # Autoverse CLI
@@ -45,6 +45,14 @@ autoverse --help
 ```text
 pipx upgrade autoverse
 ```
+
+当前 PATH 上的 `autoverse` 若由 `uv tool` 安装，则改用：
+
+```text
+uv tool upgrade autoverse
+```
+
+`autoverse update` 只查询 PyPI 是否有更新，不改本机安装。本 Skill 对应 CLI 0.3.2。
 
 不要安装或配置 MCP；0.2.0 起 CLI 只有 `autoverse` 入口。
 

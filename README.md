@@ -49,8 +49,8 @@ There is no MCP product path. Agents use the CLI's `--json --quiet` contract.
 
 The current Skill Pack version and supported CLI range are in [`manifest.json`](./manifest.json). Each `SKILL.md` also carries its own `metadata.version`.
 
-- Skill Pack: `0.4.1`
-- Compatible CLI: `>=0.3.0,<0.4.0`
+- Skill Pack: `0.4.2`
+- Compatible CLI: `>=0.3.2,<0.4.0`
 
 CLI and Skills are versioned independently. Upgrade them with `pipx upgrade autoverse` and `npx skills update ...` respectively.
 
