@@ -6,20 +6,13 @@ Agent 判定本题为计算机科学后阅读本文件。Agent 不得把本文�
 
 Agent 使用 `--domain computer_science`。
 
-```text
-autoverse --json --quiet search "<research question>" --domain computer_science
-autoverse --json --quiet search "<research question>" --domain computer_science --type review
-autoverse --json --quiet resolve doi:<doi>
-autoverse --json --quiet resolve arxiv:<arxiv-id>
-```
-
 Agent 将总问题拆为互补的检索角度，例如任务、方法、基准方法、数据集、评价指标、争议与近年进展。方法、模型、数据集的别名均须纳入检索式。
 
 文献来源中写「Autoverse 计算机文献检索，含预印本」。
 
 ## 主题各节
 
-Agent 按方法族、任务或评测对象组织主题各节。读后文所需的问题表述与符号，并入引言或本节开头。Agent 不单列 Background。
+Agent 按方法族、任务或评测对象组织主题各节。读后文所需的符号并入本节开头，或按术语文件在首次出现时写出。引言只写用户题目中的对象与比较范围，不写入学科总述。Agent 不单列 Background。近五年、奠基、完整题名检索不加年份窗，以主技能为准。
 
 ## 用词
 
