@@ -4,16 +4,9 @@ Agent 判定本题为工科后阅读本文件。Agent 不得把本文件的检�
 
 工科文献研究的检索角度取自工程设计文献中的既定用语。ScienceDirect 将 design considerations 定义为影响产品发展的因素，包括产品性质、工艺设计与最终使用性能。IEEE 与工程综述常用 state of the art、design requirements、constraints、specifications、trade-off、prototype 与 validation。国内工科毕业设计与开题文献综述常用设计要求、技术参数、设计标准与可行性。
 
-Autoverse 的 `search --domain` 只有 `auto`、`medicine` 与 `computer_science`。Agent 检索工科文献时使用 `--domain auto`。Agent 不得臆造 `--domain engineering`。
+Autoverse 的 `search --domain` 只有 `auto`、`medicine` 与 `computer_science`。Agent 检索工科文献时使用 `--domain auto`。Agent 不得自造 `--domain engineering`。
 
 ## 检索
-
-```text
-autoverse --json --quiet search "<engineering question>" --domain auto
-autoverse --json --quiet search "<engineering question>" --domain auto --type review
-autoverse --json --quiet resolve doi:<doi>
-autoverse --json --quiet resolve arxiv:<arxiv-id>
-```
 
 Agent 将总问题拆为互补的检索角度，例如工程问题与设计对象、设计要求、约束条件、技术方案或设计方法、性能指标与技术参数、权衡、原型或实验验证、技术标准、争议与近年进展。装置、材料、工艺、结构、控制方案与技术标准编号的别名均须纳入检索式。
 
@@ -21,7 +14,7 @@ Agent 将总问题拆为互补的检索角度，例如工程问题与设计对�
 
 ## 主题各节
 
-Agent 按设计对象、设计要求、约束条件、技术方案、性能指标、权衡或验证方式组织主题各节。读后文所需的问题表述、符号与单位，并入引言或本节开头。Agent 不单列 Background。
+Agent 按设计对象、设计要求、约束条件、技术方案、性能指标、权衡或验证方式组织主题各节。读后文所需的符号与单位并入本节开头，或按术语文件在首次出现时写出。引言只写用户题目中的对象与比较范围，不写入学科总述。Agent 不单列 Background。近五年、奠基、完整题名检索不加年份窗，以主技能为准。
 
 ## 著录
 
