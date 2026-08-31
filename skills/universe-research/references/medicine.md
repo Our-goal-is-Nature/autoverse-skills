@@ -10,7 +10,7 @@ Agent 将总问题拆为互补的检索角度，例如机制、疗效、方法�
 
 文献来源中写「Autoverse 医学文献检索」。
 
-精选命令未返回被引次数或医学题录时，Agent 可再调用下列路径。Agent 调用前须查阅官方 API。
+精选命令未返回被引次数或医学题录时，Agent 可再调用下列已批准路径。未列出的医学路径不得调用。
 
 ```text
 autoverse --json --quiet api -X GET /v1/pubmed/articles/summary

@@ -9,7 +9,25 @@ metadata:
 
 帮助学生就计算机科学、医学或工科问题完成文献检索并撰写综述。Agent 负责判断学科、拟定检索式、比较文献并撰写正文。Autoverse 负责检索与核验篇目。Agent 不另编写检索程序。
 
-文献检索与核验的执行面是 `autoverse`。命令、参数、错误码以 [../autoverse-cli/references/commands.md](../autoverse-cli/references/commands.md) 为准。Agent 不臆测选项名称。本文件未写出的 `/v1` 路径，Agent 须先查阅官方 API，再调用。Agent 不得编造路径。Agent 不得直接请求 HTTP。
+文献检索与核验的执行面是 `autoverse`。命令、参数、错误码以 [../autoverse-cli/references/commands.md](../autoverse-cli/references/commands.md) 为准。Agent 不臆测选项名称，不得直接请求 HTTP，也不得自行翻阅 OpenAPI 选择路径。
+
+发现与认篇优先使用精选动词：
+
+```text
+autoverse --json --quiet search "<research question>" --domain <见对应 reference>
+autoverse --json --quiet resolve <prefixed-id>
+autoverse --json --quiet batch -f <本次任务标识文件>
+```
+
+精选动词缺少必要字段时，只可使用下列共用路径；医学还可使用医学 reference 明确列出的两个补充路径。未列出的 `/v1` 路径不得调用。
+
+```text
+autoverse --json --quiet api -X GET /v1/papers/search
+autoverse --json --quiet api -X GET /v1/papers/resolve
+autoverse --json --quiet api -X POST /v1/papers/batch
+autoverse --json --quiet api -X GET /v1/semantic-scholar/native/graph/paper/{paper_id}
+autoverse --json --quiet api -X GET /v1/usage
+```
 
 学科专有的检索角度、别名、`search --domain`、主题组织与学科用词，分别写在 [references/computer-science.md](references/computer-science.md)、[references/medicine.md](references/medicine.md) 与 [references/engineering.md](references/engineering.md)。学科 reference 只补充上述内容，不改写本文件的近五年、奠基、题名检索与核验规则。Agent 在检索开始前判定学科，并先读对应 reference。Agent 不得把某一学科的检索角度套到另一学科。医学补充路径只写在医学 reference 中。
 
@@ -19,8 +37,8 @@ metadata:
 
 - 检索开始前，Agent 须确认 Autoverse 已登录。未登录时，Agent 停止检索，告知用户登录后再继续。Agent 不要代为打开登录流程。
 - Agent 先判定本题属于计算机科学、医学或工科。用户已说明学科时，Agent 不再追问。学科无法由题目判定时，Agent 只问一个简短问题。Agent 读完对应 reference 后再检索。
-- 主题检索题目的奠基研究仍纳入。摘要为空的篇目不得据以写结论。Agent 的交付物为：综述（`.md`）与证据表（`.csv`），不交 PDF。
-- Agent 按该学科 reference 中的检索角度拆开总问题。各角度分别检索。宽检索式噪声大、或要把某一已知工作找回来时，改用完整题名检索，不加年份窗。Agent 先按 DOI、再按题名去重。该学科 reference 列出的别名均须纳入检索式。同一工作的预印本与正式发表文本并列时，Agent 只保留正式发表。
+- 主题检索以近五年为主，题目的奠基研究仍纳入。摘要为空的篇目不得据以写结论。Agent 的交付物为：综述（`.md`）与证据表（`.csv`），不交 PDF。
+- Agent 按该学科 reference 中的检索角度拆开总问题。各角度分别检索。宽检索式噪声大、或要把某一已知工作找回来时，改用完整题名检索，不加年份窗。Agent 先按 DOI 去重；没有 DOI 时，只有题名、主要作者和年份均一致才视为同一工作。该学科 reference 列出的别名均须纳入检索式。同一工作的预印本与正式发表文本并列时，Agent 只保留正式发表。
 - Agent 用 Autoverse 多次检索。Agent 依结果修改检索式。Agent 不得以调用次数或检索排序代替对文献的判断。
 - Agent 查找文献时，先用 Autoverse 检索。网页检索与出版方、会议、PubMed 或 arXiv 等官方页面，可用于补充检索，并核对该页上已经写出的题录。
 - Agent 核验题录时，把拟写入综述或证据表的标识写入系统临时目录中的本次任务文件（文件名含任务短名或日期，不用固定名 `ids.txt`），用 `batch` 一次核验。Agent 不要对每篇单独核验。网页不能证明两篇论文之间的参考文献关系或后续引用关系。写入综述或证据表的 DOI、PMID、PMCID 或 arXiv 编号，须通过 `batch` 核验。核验不上的篇目，Agent 不得当作已引用文献。`batch` 成功但题名、作者或摘要与拟引工作不一致的条目，Agent 剔除。
