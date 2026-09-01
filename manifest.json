@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "name": "autoverse-skills",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "requires_cli": ">=0.3.0,<0.4.0",
   "skills": {
-    "autoverse-cli": "0.2.1",
+    "autoverse-cli": "0.2.2",
     "autoverse-seed-expand": "0.3.1",
     "autoverse-topic-prep": "0.1.0",
     "universe-research": "0.3.0"
