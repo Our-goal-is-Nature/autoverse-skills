@@ -19,7 +19,6 @@ autoverse [--json] [--quiet] [--api-base URL] [--api-key KEY] [--profile NAME] <
 | `whoami` | 0 | `{identity,email,balance}` |
 | `usage` | 0 | `{balance,prices}` |
 | `topup` | 0 | `{account_email,packs}` |
-| `update` | 0 | 查询 PyPI；不改本机安装 |
 
 `login --no-browser` 会在等待回调时向终端展示授权 URL，只用于人读模式；不得与 `--json` 组合。
 
