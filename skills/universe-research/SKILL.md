@@ -2,7 +2,7 @@
 name: universe-research
 description: 用户要对计算机科学、医学或工科问题做文献研究、撰写综述并交出证据表时使用。用户已给出一篇具体论文或一位作者、并要沿引文或著作扩展时不要使用。
 metadata:
-  version: 0.3.0
+  version: 0.3.1
 ---
 
 # Universe Research
@@ -31,7 +31,7 @@ autoverse --json --quiet api -X GET /v1/usage
 
 学科专有的检索角度、别名、`search --domain`、主题组织与学科用词，分别写在 [references/computer-science.md](references/computer-science.md)、[references/medicine.md](references/medicine.md) 与 [references/engineering.md](references/engineering.md)。学科 reference 只补充上述内容，不改写本文件的近五年、奠基、题名检索与核验规则。Agent 在检索开始前判定学科，并先读对应 reference。Agent 不得把某一学科的检索角度套到另一学科。医学补充路径只写在医学 reference 中。
 
-行文与术语：撰写正文前阅读 [references/chinese-academic-prose.md](references/chinese-academic-prose.md) 与 [references/chinese-academic-terms.md](references/chinese-academic-terms.md)。
+行文与术语：撰写正文前阅读 [references/chinese-academic-prose.md](references/chinese-academic-prose.md) 与 [references/chinese-academic-terms.md](references/chinese-academic-terms.md)。引用键与编译见 [references/citations.md](references/citations.md)。
 
 ## 做法
 
@@ -41,7 +41,7 @@ autoverse --json --quiet api -X GET /v1/usage
 - Agent 按该学科 reference 中的检索角度拆开总问题。各角度分别检索。宽检索式噪声大、或要把某一已知工作找回来时，改用完整题名检索，不加年份窗。Agent 先按 DOI 去重；没有 DOI 时，只有题名、主要作者和年份均一致才视为同一工作。该学科 reference 列出的别名均须纳入检索式。同一工作的预印本与正式发表文本并列时，Agent 只保留正式发表。
 - Agent 用 Autoverse 多次检索。Agent 依结果修改检索式。Agent 不得以调用次数或检索排序代替对文献的判断。
 - Agent 查找文献时，先用 Autoverse 检索。网页检索与出版方、会议、PubMed 或 arXiv 等官方页面，可用于补充检索，并核对该页上已经写出的题录。
-- Agent 核验题录时，把拟写入综述或证据表的标识写入系统临时目录中的本次任务文件（文件名含任务短名或日期，不用固定名 `ids.txt`），用 `batch` 一次核验。Agent 不要对每篇单独核验。网页不能证明两篇论文之间的参考文献关系或后续引用关系。写入综述或证据表的 DOI、PMID、PMCID 或 arXiv 编号，须通过 `batch` 核验。核验不上的篇目，Agent 不得当作已引用文献。`batch` 成功但题名、作者或摘要与拟引工作不一致的条目，Agent 剔除。
+- Agent 核验题录时，把拟写入综述或证据表的标识写入系统临时目录中的本次任务文件（文件名含任务短名或日期，不用固定名 `ids.txt`），用 `batch` 一次核验。Agent 不要对每篇单独核验。网页不能证明两篇论文之间的参考文献关系或后续引用关系。写入综述或证据表的 DOI、PMID、PMCID 或 arXiv 编号，须通过 `batch` 核验。核验不上的篇目，Agent 不得当作已引用文献。`batch` 成功但题名、作者或摘要与拟引工作不一致的条目，Agent 剔除。`batch` 成功包须保存为 JSON，供编译引用。
 - Agent 纳入文献，直到已返回的文献足以比较各研究的结论，并写明一致、分歧或证据不足。Agent 不为凑篇数而纳入与本题无关的文献。检索或点数不足时，Agent 在文献来源中说明实际覆盖范围，不得把未经检索的内容写为文献结论。
 
 
@@ -71,11 +71,17 @@ autoverse --json --quiet api -X GET /v1/usage
 3. **主题各节**：按对应 reference 中的主题组织。不要按单篇罗列。不要每节套「一致之处 / 分歧与限度」。
 4. **讨论**：集中写研究间的一致、分歧与证据不足。
 5. **结语**
-6. **参考文献**
+6. **参考文献**（由脚本写入，Agent 不写这一节）
 
-正文用顺序编码：论断后标 `[1]`，按首次出现连续编号，多篇写作 `[1, 4, 7]`。文末参考文献与编号一一对应。证据表第 *n* 行即 `[n]`，三处顺序必须一致。正文不写 `doi:…` 或 `arxiv:…` 串。
+草稿正文用标准引用：论断后写 `[@DOI]`，多篇写作 `[@DOI1; @DOI2]`，格式见 [references/citations.md](references/citations.md)。Agent 不手写 `[1]`，不手写文末参考文献。写完后运行：
 
-参考文献尽量写：作者，题名，会议或期刊，年份，DOI 或 URL。预印本无正式发表时写 arXiv 编号。作者缺则从作者栏起写，该栏留空。学科专有的著录要求以对应 reference 为准。
+```text
+python scripts/render_cites.py --json <batch成功包> --draft <综述草稿.md> --out <综述.md> --csv <证据表.csv>
+```
+
+脚本按首次出现连续编号。交稿综述、文末参考文献与证据表第 *n* 行必须是该脚本的输出，三处顺序一致。交稿正文不写 `doi:…` 或 `[@…]`。Agent 只在脚本写出的证据表上填写「要点」。
+
+参考文献著录由脚本从 JSON 灌入：作者，题名，会议或期刊，年份，DOI 或 URL。预印本无正式发表且无 DOI 时写 arXiv 编号。作者缺则从作者栏起写，该栏留空。
 
 综述正文不得出现：交付、约定、用户要求、调研、证据表、标识符、未返回、已核对篇目、`resolve`、`batch`、Autoverse 命令、拆分的研究问题。一致与分歧写入讨论，不作各节小标题。
 
@@ -85,5 +91,5 @@ autoverse --json --quiet api -X GET /v1/usage
 
 Agent 交下列两件。保存位置以用户指定为准。用户未指定时，Agent 将文件写在当前工作目录，并在对话中告知路径。Agent 不交 PDF。
 
-- 综述（`.md`）：按「综述体例」。
-- 证据表（`.csv`）：每行一篇，列顺序与参考文献编号相同；列题名、作者、年份、会议或期刊、DOI 或 URL、文献类型、被引次数、与本问题相关的要点。缺项留空。摘要为空的篇目要点栏留空。
+- 综述（`.md`）：`render_cites.py` 编好的文稿，按「综述体例」。
+- 证据表（`.csv`）：同一脚本按同一编号写出；列题名、作者、年份、会议或期刊、DOI 或 URL、文献类型、被引次数、与本问题相关的要点。前七列不得手改。缺项留空。摘要为空的篇目要点栏留空。
