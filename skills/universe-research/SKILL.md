@@ -35,7 +35,7 @@ autoverse --json --quiet api -X GET /v1/usage
 
 ## 做法
 
-- 检索开始前，Agent 须确认 Autoverse 已登录。未登录时，Agent 停止检索，告知用户登录后再继续。Agent 不要代为打开登录流程。
+- Agent 做第一次必要调用。返回 `INVALID_SESSION` 时，Agent 告知用户登录，登录后继续原任务。Agent 不要代为打开登录流程。
 - Agent 先判定本题属于计算机科学、医学或工科。用户已说明学科时，Agent 不再追问。学科无法由题目判定时，Agent 只问一个简短问题。Agent 读完对应 reference 后再检索。
 - 主题检索以近五年为主，题目的奠基研究仍纳入。摘要为空的篇目不得据以写结论。Agent 的交付物为：综述（`.md`）与证据表（`.csv`），不交 PDF。
 - Agent 按该学科 reference 中的检索角度拆开总问题。各角度分别检索。宽检索式噪声大、或要把某一已知工作找回来时，改用完整题名检索，不加年份窗。Agent 先按 DOI 去重；没有 DOI 时，只有题名、主要作者和年份均一致才视为同一工作。该学科 reference 列出的别名均须纳入检索式。同一工作的预印本与正式发表文本并列时，Agent 只保留正式发表。
