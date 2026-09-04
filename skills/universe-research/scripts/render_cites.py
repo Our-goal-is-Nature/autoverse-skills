@@ -60,15 +60,25 @@ def identifiers_of(record: dict[str, Any]) -> dict[str, str]:
     if not isinstance(raw, dict):
         raw = {}
     out: dict[str, str] = {}
-    if raw.get("doi"):
-        out["doi"] = bare_doi(str(raw["doi"]))
-    if raw.get("pmid"):
-        out["pmid"] = str(raw["pmid"]).strip()
-    if raw.get("arxiv"):
-        out["arxiv"] = str(raw["arxiv"]).strip()
+    doi = raw.get("doi")
+    if isinstance(doi, str) and doi.strip():
+        out["doi"] = bare_doi(doi)
+    pmid = raw.get("pmid")
+    if pmid is not None and str(pmid).strip():
+        out["pmid"] = str(pmid).strip()
+    arxiv = raw.get("arxiv")
+    if isinstance(arxiv, str) and arxiv.strip():
+        out["arxiv"] = arxiv.strip()
     paper_id = record.get("id")
-    if isinstance(paper_id, str) and paper_id.startswith("arxiv:") and "arxiv" not in out:
-        out["arxiv"] = paper_id.split(":", 1)[1]
+    if isinstance(paper_id, str):
+        if paper_id.lower().startswith("doi:") and "doi" not in out:
+            stripped = paper_id.split(":", 1)[1].strip()
+            if stripped:
+                out["doi"] = bare_doi(stripped)
+        if paper_id.lower().startswith("arxiv:") and "arxiv" not in out:
+            stripped = paper_id.split(":", 1)[1].strip()
+            if stripped:
+                out["arxiv"] = stripped
     return out
 
 
@@ -145,7 +155,15 @@ def index_records(records: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
 
 
 def cite_tokens(blob: str) -> list[str]:
-    return [part.strip() for part in blob.split(";") if part.strip()]
+    parts = re.split(r";\s*@", blob)
+    tokens: list[str] = []
+    for index, part in enumerate(parts):
+        token = part.strip()
+        if index > 0:
+            token = "@" + token
+        if token:
+            tokens.append(token)
+    return tokens
 
 
 def first_keys(draft: str) -> list[str]:
@@ -186,12 +204,42 @@ def publication_type_of(record: dict[str, Any]) -> str:
     return ""
 
 
+CITATION_PROVIDERS = ("semantic_scholar", "openalex", "pubmed", "crossref")
+
+
+def _count_value(item: dict[str, Any]) -> str | None:
+    value = item.get("value")
+    if isinstance(value, bool) or value is None:
+        return None
+    if isinstance(value, (int, float)):
+        return str(int(value))
+    if isinstance(value, str) and value.strip():
+        stripped = value.strip()
+        if stripped.isdigit() or re.fullmatch(r"-?\d+", stripped):
+            return str(int(stripped))
+    return None
+
+
 def citation_count_of(record: dict[str, Any]) -> str:
     counts = record.get("citation_counts")
-    if isinstance(counts, list):
-        for item in counts:
-            if isinstance(item, dict) and item.get("value") is not None:
-                return str(item["value"])
+    if not isinstance(counts, list):
+        return ""
+    by_provider: dict[str, str] = {}
+    for item in counts:
+        if not isinstance(item, dict):
+            continue
+        provider = item.get("provider")
+        if not isinstance(provider, str):
+            continue
+        parsed = _count_value(item)
+        if parsed is None:
+            continue
+        name = provider.strip().lower()
+        if name not in by_provider:
+            by_provider[name] = parsed
+    for name in CITATION_PROVIDERS:
+        if name in by_provider:
+            return by_provider[name]
     return ""
 
 
