@@ -2,14 +2,14 @@
 name: universe-research
 description: 用户要对计算机科学、医学或工科问题做文献研究、撰写综述并交出证据表时使用。用户已给出一篇具体论文或一位作者、并要沿引文或著作扩展时不要使用。
 metadata:
-  version: 0.3.1
+  version: 0.3.2
 ---
 
 # Universe Research
 
 帮助学生就计算机科学、医学或工科问题完成文献检索并撰写综述。Agent 负责判断学科、拟定检索式、比较文献并撰写正文。Autoverse 负责检索与核验篇目。Agent 不另编写检索程序。
 
-文献检索与核验的执行面是 `autoverse`。命令、参数、错误码以 [../autoverse-cli/references/commands.md](../autoverse-cli/references/commands.md) 为准。Agent 不臆测选项名称，不得直接请求 HTTP，也不得自行翻阅 OpenAPI 选择路径。
+文献检索与核验的执行面是 `autoverse`。命令、参数、错误码以 [../autoverse-cli/references/commands.md](../autoverse-cli/references/commands.md) 为准。Agent 不自产选项名称，不得直接请求 HTTP，也不得自行翻阅 OpenAPI 选择路径。
 
 发现与认篇优先使用精选动词：
 
@@ -44,8 +44,6 @@ autoverse --json --quiet api -X GET /v1/usage
 - Agent 核验题录时，把拟写入综述或证据表的标识写入系统临时目录中的本次任务文件（文件名含任务短名或日期，不用固定名 `ids.txt`），用 `batch` 一次核验。Agent 不要对每篇单独核验。网页不能证明两篇论文之间的参考文献关系或后续引用关系。写入综述或证据表的 DOI、PMID、PMCID 或 arXiv 编号，须通过 `batch` 核验。核验不上的篇目，Agent 不得当作已引用文献。`batch` 成功但题名、作者或摘要与拟引工作不一致的条目，Agent 剔除。`batch` 成功包须保存为 JSON，供编译引用。
 - Agent 纳入文献，直到已返回的文献足以比较各研究的结论，并写明一致、分歧或证据不足。Agent 不为凑篇数而纳入与本题无关的文献。检索或点数不足时，Agent 在文献来源中说明实际覆盖范围，不得把未经检索的内容写为文献结论。
 
-
-
 ## 引证与依据
 
 综述中的论断与文献要点，须能回到已核验且摘要非空的篇目。摘要只支持摘要所能支持的判断。Agent 不得编造 DOI、PMID、arXiv 编号、题名或研究结论。
@@ -76,8 +74,10 @@ autoverse --json --quiet api -X GET /v1/usage
 草稿正文用标准引用：论断后写 `[@DOI]`，多篇写作 `[@DOI1; @DOI2]`，格式见 [references/citations.md](references/citations.md)。Agent 不手写 `[1]`，不手写文末参考文献。写完后运行：
 
 ```text
-python scripts/render_cites.py --json <batch成功包> --draft <综述草稿.md> --out <综述.md> --csv <证据表.csv>
+python "<本技能包根目录>/scripts/render_cites.py" --json <batch成功包> --draft <综述草稿.md> --out <综述.md> --csv <证据表.csv>
 ```
+
+本技能包根目录是含 `SKILL.md` 的 `universe-research` 目录。Agent 在用户研究目录运行时用该目录的绝对路径，不要用当前工作目录下的 `scripts/`。
 
 脚本按首次出现连续编号。交稿综述、文末参考文献与证据表第 *n* 行必须是该脚本的输出，三处顺序一致。交稿正文不写 `doi:…` 或 `[@…]`。Agent 只在脚本写出的证据表上填写「要点」。
 
