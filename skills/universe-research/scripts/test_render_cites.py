@@ -223,6 +223,80 @@ def test_citation_numeric_string_and_null_fallback() -> None:
     assert rc.citation_count_of(record) == "12"
 
 
+def test_fractional_float_falls_back() -> None:
+    record = {
+        "citation_counts": [
+            {"provider": "semantic_scholar", "value": 9.7},
+            {"provider": "openalex", "value": 3},
+        ]
+    }
+    assert rc.citation_count_of(record) == "3"
+
+
+def test_negative_int_falls_back() -> None:
+    record = {
+        "citation_counts": [
+            {"provider": "semantic_scholar", "value": -1},
+            {"provider": "openalex", "value": 4},
+        ]
+    }
+    assert rc.citation_count_of(record) == "4"
+
+
+def test_zero_int_kept() -> None:
+    assert rc.citation_count_of({"citation_counts": [{"provider": "semantic_scholar", "value": 0}]}) == "0"
+
+
+def test_zero_float_kept() -> None:
+    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": 0.0}]}) == "0"
+
+
+def test_integer_float_normalized() -> None:
+    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": 12.0}]}) == "12"
+
+
+def test_digit_string_normalized() -> None:
+    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "12"}]}) == "12"
+
+
+def test_leading_zero_string_normalized() -> None:
+    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "012"}]}) == "12"
+
+
+def test_plus_prefixed_string_skipped() -> None:
+    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "+12"}]}) == ""
+
+
+def test_decimal_string_skipped() -> None:
+    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "12.0"}]}) == ""
+
+
+def test_bool_true_skipped() -> None:
+    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": True}]}) == ""
+
+
+def test_same_provider_skips_null_then_keeps() -> None:
+    record = {
+        "citation_counts": [
+            {"provider": "semantic_scholar", "value": None},
+            {"provider": "semantic_scholar", "value": 5},
+        ]
+    }
+    assert rc.citation_count_of(record) == "5"
+
+
+def test_all_invalid_counts_empty() -> None:
+    record = {
+        "citation_counts": [
+            {"provider": "semantic_scholar", "value": 9.7},
+            {"provider": "openalex", "value": -1.0},
+            {"provider": "pubmed", "value": 1.5},
+            {"provider": "crossref", "value": -3},
+        ]
+    }
+    assert rc.citation_count_of(record) == ""
+
+
 def test_cli_from_other_cwd(tmp_path: Path) -> None:
     tmp_path.mkdir(parents=True, exist_ok=True)
     json_path = tmp_path / "hits.json"
@@ -300,6 +374,18 @@ def run_all() -> None:
         test_citation_pubmed_when_no_higher,
         test_citation_empty_or_unknown_provider,
         test_citation_numeric_string_and_null_fallback,
+        test_fractional_float_falls_back,
+        test_negative_int_falls_back,
+        test_zero_int_kept,
+        test_zero_float_kept,
+        test_integer_float_normalized,
+        test_digit_string_normalized,
+        test_leading_zero_string_normalized,
+        test_plus_prefixed_string_skipped,
+        test_decimal_string_skipped,
+        test_bool_true_skipped,
+        test_same_provider_skips_null_then_keeps,
+        test_all_invalid_counts_empty,
         test_search_items_are_top_level_papers,
     ]
     with TemporaryDirectory() as folder:

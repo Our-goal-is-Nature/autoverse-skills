@@ -211,11 +211,15 @@ def _count_value(item: dict[str, Any]) -> str | None:
     value = item.get("value")
     if isinstance(value, bool) or value is None:
         return None
-    if isinstance(value, (int, float)):
-        return str(int(value))
-    if isinstance(value, str) and value.strip():
+    if isinstance(value, int):
+        return str(value) if value >= 0 else None
+    if isinstance(value, float):
+        if value >= 0 and value.is_integer():
+            return str(int(value))
+        return None
+    if isinstance(value, str):
         stripped = value.strip()
-        if stripped.isdigit() or re.fullmatch(r"-?\d+", stripped):
+        if re.fullmatch(r"[0-9]+", stripped):
             return str(int(stripped))
     return None
 
