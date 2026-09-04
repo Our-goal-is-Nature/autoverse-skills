@@ -28,13 +28,17 @@ Agent 撰写综述草稿时阅读本文件。编号与参考文献由 `scripts/r
 列出本题可用的键：
 
 ```text
-python scripts/render_cites.py --json <batch或search的JSON> --keys
+python "<本技能包根目录>/scripts/render_cites.py" --json <batch或search的JSON> --keys
 ```
+
+本技能包根目录是含 `SKILL.md` 的 `universe-research` 目录。不要依赖当前工作目录恰好是该目录。
+
+同处多篇只把 `; @`（分号后可有空格再写 `@`）当成分隔。DOI 内部的分号不是分隔符。
 
 ## 编译
 
 ```text
-python scripts/render_cites.py --json <batch或search的JSON> --draft <综述草稿.md> --out <综述.md> --csv <证据表.csv>
+python "<本技能包根目录>/scripts/render_cites.py" --json <batch或search的JSON> --draft <综述草稿.md> --out <综述.md> --csv <证据表.csv>
 ```
 
 脚本按正文**第一次出现**把 `[@…]` 换成 `[1]`、`[2]`、`[1, 2]`，并写出「参考文献」。证据表前七列按同一编号从 JSON 灌入；「与本问题相关的要点」留空，Agent 按 `[n]` 填写。JSON 里有、草稿没引用的篇目不进入交稿。键不在 JSON 里则失败，不编造题录。

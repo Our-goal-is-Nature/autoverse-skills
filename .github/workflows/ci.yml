@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: "22"
       - run: python scripts/validate.py
+      - name: Render cites tests
+        working-directory: skills/universe-research/scripts
+        run: python test_render_cites.py
       - run: npx -y skills add . --list
       - name: Isolated install
         env:
@@ -27,4 +30,3 @@ jobs:
           mkdir -p "$HOME"
           npx -y skills add . --skill '*' -g -a codex -y --copy
           npx -y skills list -g -a codex
-
