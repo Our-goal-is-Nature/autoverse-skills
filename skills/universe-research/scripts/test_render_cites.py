@@ -244,35 +244,53 @@ def test_negative_int_falls_back() -> None:
 
 
 def test_zero_int_kept() -> None:
-    assert rc.citation_count_of({"citation_counts": [{"provider": "semantic_scholar", "value": 0}]}) == "0"
+    assert (
+        rc.citation_count_of({"citation_counts": [{"provider": "semantic_scholar", "value": 0}]})
+        == "0"
+    )
 
 
 def test_zero_float_kept() -> None:
-    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": 0.0}]}) == "0"
+    assert (
+        rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": 0.0}]}) == "0"
+    )
 
 
 def test_integer_float_normalized() -> None:
-    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": 12.0}]}) == "12"
+    assert (
+        rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": 12.0}]}) == "12"
+    )
 
 
 def test_digit_string_normalized() -> None:
-    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "12"}]}) == "12"
+    assert (
+        rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "12"}]}) == "12"
+    )
 
 
 def test_leading_zero_string_normalized() -> None:
-    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "012"}]}) == "12"
+    assert (
+        rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "012"}]})
+        == "12"
+    )
 
 
 def test_plus_prefixed_string_skipped() -> None:
-    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "+12"}]}) == ""
+    assert (
+        rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "+12"}]}) == ""
+    )
 
 
 def test_decimal_string_skipped() -> None:
-    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "12.0"}]}) == ""
+    assert (
+        rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": "12.0"}]}) == ""
+    )
 
 
 def test_bool_true_skipped() -> None:
-    assert rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": True}]}) == ""
+    assert (
+        rc.citation_count_of({"citation_counts": [{"provider": "openalex", "value": True}]}) == ""
+    )
 
 
 def test_same_provider_skips_null_then_keeps() -> None:

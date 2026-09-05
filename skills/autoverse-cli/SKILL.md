@@ -2,7 +2,7 @@
 name: autoverse-cli
 description: 仅在用户要安装、配置、调用或排障 Autoverse CLI 本身时使用，处理登录、凭证 profile、账户与点数、命令语法、JSON/退出码和原子命令合同。不要因普通“找论文、做开题、沿种子扩展”请求单独触发。
 metadata:
-  version: 0.2.2
+  version: 0.2.5
 ---
 
 # Autoverse CLI
@@ -104,6 +104,17 @@ autoverse --json --quiet batch -f ids.txt
 - 不把 Markdown 笔记直接交给 batch；
 - batch 部分失败仍 exit 0，逐条读取 `items[].error`。
 
+已保存的检索 JSON 导出题录：
+
+```text
+autoverse --json --quiet export --format bibtex -f batch.json
+```
+
+- `--format` 为 `ris`、`bibtex` 或 `markdown`；
+- CLI 0.3.3 起支持 export，从返回的 `data.text` 取题录文本并保存；
+- `-o` / `--output` 属于 CLI 0.3.4 起的能力；只有当前安装版本的 `export --help` 列出该参数时才使用，0.3.3 不传 `-o`；
+- 本地组装，0 点，不要求登录。
+
 ## 错误恢复
 
 - `INVALID_SESSION` / 401：请求人重新 `autoverse login`。
@@ -113,7 +124,8 @@ autoverse --json --quiet batch -f ids.txt
 - `retryable=false`：停止，不猜路径、不换来源。
 - `ALL_SOURCES_UNAVAILABLE`：没有任何可用论文结果；按 `retryable` 最多重试一次，仍失败就停止。不要把它报告成“检索到 0 篇”。
 - `CURSOR_OPTION_CONFLICT`：cursor 页只带 cursor 和可选 limit。
-- `INPUT_FILE_*`：修正文件后再调用 batch。
+- `INPUT_FILE_*`：修正文件后再调用 batch 或 export。
+- `OUTPUT_FILE_*`：换可写的 `-o` 路径后再调用 export。
 - `RELATED_ID_*`：不要把 DOI、裸数字或含斜杠 ID 塞入 related 路径。
 - 503：按当前命令合同停口，不用 search 假装替代 related。
 

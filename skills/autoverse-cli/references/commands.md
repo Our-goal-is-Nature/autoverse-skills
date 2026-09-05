@@ -32,6 +32,7 @@ autoverse [--json] [--quiet] [--api-base URL] [--api-key KEY] [--profile NAME] <
 | `batch` | 1/调用 | `-f/--file`，1–50 ID | identifier + PaperDetail/error |
 | `authors` | 1 | name | 完整 AuthorCard 列表 |
 | `related` | 1/via/page；DOI 内嵌 resolve 另 1 | identifier、via、limit、offset | PaperCard 列表、via、seed、next_offset |
+| `export` | 0 | CLI 0.3.3+：`--format ris|bibtex|markdown`，`-f/--file`；0.3.4+：`-o/--output` | `{format,text,count,skipped}`；支持 `-o` 时另有 `path` |
 
 ## Search
 
@@ -62,6 +63,20 @@ cursor 模式禁止 query、domain、mode、year-from、year-to 和 type。token
 `resolve` 接受 `doi:`、`pmid:`、`pmcid:`、`arxiv:`。
 
 `batch` 文件支持路径或 `--file -` 从 stdin 读取。文件必须 UTF-8、一行一个 ID、1–50 条。
+
+## Export
+
+把已保存的 `search` / `resolve` / `batch` JSON 在本地组装成 RIS、BibTeX 或编号题录 Markdown。不登录、不请求 `/v1`、不扣点。
+
+```text
+autoverse --json --quiet export --format ris|bibtex|markdown -f <json文件>
+autoverse --json --quiet export --format ris --file -
+```
+
+- `--format` 只接受小写 `ris`、`bibtex`、`markdown`。
+- `-f` 与 `batch` 相同：路径或 `-` 表示标准输入。文件必须是 UTF-8 JSON。
+- CLI 0.3.3 从 `data.text` 取得组装文本，由调用方保存。CLI 0.3.4 起的 `-o` / `--output` 可直接写入 UTF-8 文件；使用前核对当前 `export --help` 是否列出该参数，避免对 0.3.3 传入未支持的参数。
+- `request_id` 为 `null`。`count` 为写出条数，`skipped` 为无标题而跳过的条数。有 `-o` 时 `path` 为写入路径。
 
 ## Related
 
@@ -121,6 +136,11 @@ autoverse --json --quiet related <prefixed-id> --via references|cited-by|similar
 | `LIMIT_OUT_OF_RANGE` | 改为 1–50 |
 | `INVALID_DOMAIN/MODE/PUBLICATION_TYPE` | 使用 help 枚举 |
 | `INPUT_FILE_NOT_FOUND/NOT_READABLE/NOT_UTF8/EMPTY` | 修正输入 |
+| `OUTPUT_FILE_INVALID` | `-o` 须是文件路径，不能是 `-` |
+| `OUTPUT_FILE_NOT_WRITABLE` | 换可写的 `-o` 路径 |
+| `INVALID_EXPORT_FORMAT` | 改为小写 `ris` / `bibtex` / `markdown` |
+| `EXPORT_INPUT_INVALID` | 换成 `search` / `resolve` / `batch` 成功包或题录数组 |
+| `EXPORT_NO_RECORDS` | 输入须至少一篇带非空标题的题录 |
 | `BATCH_LIMIT_EXCEEDED` | 拆成最多 50 条 |
 | `RELATED_ID_PREFIX_REQUIRED/INVALID/UNUSABLE` | 使用 path-safe prefixed ID |
 | `RELATED_OFFSET_NOT_SUPPORTED` | similar 移除 offset |

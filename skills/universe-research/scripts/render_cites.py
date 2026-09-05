@@ -178,7 +178,9 @@ def first_keys(draft: str) -> list[str]:
 
 def replace_cites(draft: str, number: dict[str, int]) -> str:
     def repl(match: re.Match[str]) -> str:
-        nums = [str(number[normalize_key(token.lstrip("@"))]) for token in cite_tokens(match.group(1))]
+        nums = [
+            str(number[normalize_key(token.lstrip("@"))]) for token in cite_tokens(match.group(1))
+        ]
         return "[" + ", ".join(nums) + "]"
 
     return CITE.sub(repl, draft)
@@ -315,13 +317,18 @@ def write_csv(path: Path, records: list[dict[str, Any]]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Compile [@doi] draft against search/batch JSON into numbered review and evidence table."
+        description=(
+            "Compile [@doi] draft against search/batch JSON "
+            "into numbered review and evidence table."
+        )
     )
     parser.add_argument("--json", required=True, type=Path, dest="json_path")
     parser.add_argument("--draft", type=Path)
     parser.add_argument("--out", type=Path)
     parser.add_argument("--csv", type=Path)
-    parser.add_argument("--keys", action="store_true", help="Print cite keys and titles, then exit.")
+    parser.add_argument(
+        "--keys", action="store_true", help="Print cite keys and titles, then exit."
+    )
     args = parser.parse_args()
     records = load_records(args.json_path.read_text(encoding="utf-8"))
     if args.keys:

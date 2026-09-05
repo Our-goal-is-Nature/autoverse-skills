@@ -2,7 +2,7 @@
 name: universe-research
 description: 用户要对计算机科学、医学或工科问题做文献研究、撰写综述并交出证据表时使用。用户已给出一篇具体论文或一位作者、并要沿引文或著作扩展时不要使用。
 metadata:
-  version: 0.3.2
+  version: 0.3.3
 ---
 
 # Universe Research
